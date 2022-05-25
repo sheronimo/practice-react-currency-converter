@@ -15,20 +15,32 @@ const requestOptions = {
 
 function App() {
 	const [currencyOptions, setCurrencyOptions] = useState([]);
-	console.log(currencyOptions);
+	const [fromCurrency, setFromCurrency] = useState();
+	const [toCurrency, setToCurrency] = useState();
 
 	useEffect(() => {
 		fetch(BASE_URL, requestOptions)
 			.then((response) => response.json())
-			.then((result) => setCurrencyOptions([...Object.keys(result.rates)]));
+			.then((result) => {
+				const currency = Object.keys(result.rates)[32];
+				setCurrencyOptions([...Object.keys(result.rates)]);
+				setFromCurrency(result.base);
+				setToCurrency(currency);
+			});
 	}, []);
 
 	return (
 		<>
 			<h1>Convert</h1>
-			<CurrencyRow currencyOptions={currencyOptions} />
+			<CurrencyRow
+				currencyOptions={currencyOptions}
+				selectedCurrency={fromCurrency}
+			/>
 			<div className='equals'>=</div>
-			<CurrencyRow currencyOptions={currencyOptions} />
+			<CurrencyRow
+				currencyOptions={currencyOptions}
+				selectedCurrency={toCurrency}
+			/>
 		</>
 	);
 }
